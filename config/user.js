@@ -29,6 +29,10 @@ const scoreSchema = new mongoose.Schema({
 
 
 const userSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    libid: String,
+    phone: String,
     userid: String,
     displayname:String,
     username:String,
@@ -42,7 +46,7 @@ const userSchema = new mongoose.Schema({
     },
     profileUrl:String,
     avatarUrl:String,
-    email:String,
+    gitEmail:String,
     bio:String,
     blog:String,
     publicRepo:Number,
