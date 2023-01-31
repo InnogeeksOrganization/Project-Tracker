@@ -129,16 +129,11 @@ async function track() {
 
                                     user.score += diffScore;
 
-                                    const url = issue.repository_url;
-                                    const resp = await octokit.request('GET /repos/{owner}/{repo}', {
-                                        owner: url.split('/')[4],
-                                        repo: url.split('/')[5]
-                                    });
                                     console.log(issue);
                                     user.scoresRecord.push({
                                         Issue_ID: issue.id,
-                                        projectId: resp.data.id,
-                                        projectName: resp.data.name,
+                                        projectId: project.projectId,
+                                        projectName: project.projectName,
                                         score: diffScore,
                                         Issue: {
                                             Issue_ID: issue.id,
