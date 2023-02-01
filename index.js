@@ -76,7 +76,7 @@ async function track() {
             owner: project.owner.ownerUsername,
             repo: project.projectName,
             state: 'closed',
-            since: '2023-01-27T18:30:00.000Z',
+            since: '2023-01-31T18:30:00.000Z',
             per_page: '100'
         });
 
