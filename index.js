@@ -5,9 +5,12 @@ const Project = require('./config/project');
 const User = require('./config/user');
 require('dotenv').config();
 
+//Initialization
 const octokit = new Octokit({ auth: process.env.GIT_TOKEN });
 mongoose.connect(process.env.DB_STRING, () => { console.log("Connected to MongoDB.") });
 
+
+//For adding projects to DB
 async function fetchAndAddProject(link) {
 
     const resp = await octokit.request('GET /repos/{owner}/{repo}', {
@@ -18,7 +21,6 @@ async function fetchAndAddProject(link) {
     for (let topic of resp.data.topics) {
         tc.push(topic);
     }
-    console.log(tc);
     await Project.create({
         projectId: resp.data.id,
         projectName: resp.data.name,
@@ -47,6 +49,7 @@ async function fetchAndAddProject(link) {
     console.log(projects);
 }
 
+//Difficulty to score mapping
 function getDifficultyScore(difficulty) {
     let score = 0;
     switch (difficulty) {
@@ -62,7 +65,9 @@ function getDifficultyScore(difficulty) {
     }
     return score;
 }
-let i = 0;
+
+
+// Tracks all projects in the DB
 async function track() {
 
     const d = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
@@ -87,7 +92,7 @@ async function track() {
                 const isIWOC = issue.labels.find((element) => { return element.name.toLowerCase() === "iwoc" });
 
                 if (isIWOC) {
-                    
+
                     const assignees = issue.assignees;
 
                     for (let assignee of assignees) {
@@ -95,18 +100,18 @@ async function track() {
                         const user = await User.findOne({ userid: assignee.id });
 
                         if (user !== null) {
-
                             const recordExists = user.scoresRecord.find((element) => { return element.Issue_ID == issue.id });
 
                             if (!recordExists) {
 
                                 let diffScore = 0;
                                 let difficulty = "NA";
-
                                 let labels = [];
-                                for(let label of issue.labels){
+
+                                for (let label of issue.labels) {
                                     labels.push(label.name.toLowerCase());
-                                    switch(label.name.toLowerCase()){
+
+                                    switch (label.name.toLowerCase()) {
                                         case "easy":
                                             diffScore = 10;
                                             difficulty = "easy";
@@ -123,13 +128,13 @@ async function track() {
                                             break;
                                     }
                                 }
-                                
+
 
                                 if (difficulty !== "NA") {
 
                                     user.score += diffScore;
 
-                                    console.log(issue);
+                                    // console.log(issue);
                                     user.scoresRecord.push({
                                         Issue_ID: issue.id,
                                         projectId: project.projectId,
@@ -171,6 +176,7 @@ async function track() {
 
 }
 
+// startTrack() logs and calls track() after every 60 seconds
 async function startTrack() {
     fs.appendFileSync('track.log', '--------------------------------------\n');
     await track();
@@ -182,6 +188,7 @@ async function timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, 1000 * ms));
 }
 
+// For adding multiple projects
 async function addProjects(data) {
     for (let d of data) {
         await fetchAndAddProject(d);
