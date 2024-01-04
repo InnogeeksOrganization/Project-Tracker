@@ -11,7 +11,7 @@ mongoose.connect(process.env.DB_STRING, () => { console.log("Connected to MongoD
 
 
 //For adding projects to DB
-async function fetchAndAddProject(link) {
+const fetchAndAddProject = async(link) => {
 
     const resp = await octokit.request('GET /repos/{owner}/{repo}', {
         owner: link.split('/')[3],
@@ -42,37 +42,14 @@ async function fetchAndAddProject(link) {
         repo_pushed_at: new Date(resp.data.pushed_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
         date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     });
-
-
-    const projects = await Project.find();
-
-    console.log(projects);
-}
-
-//Difficulty to score mapping
-function getDifficultyScore(difficulty) {
-    let score = 0;
-    switch (difficulty) {
-        case 'Easy':
-            score = 10;
-            break;
-        case 'Intermediate':
-            score = 30;
-            break;
-        case 'Hard':
-            score = 50;
-            break;
-    }
-    return score;
 }
 
 
 // Tracks all projects in the DB
-async function track() {
+const track = async() => {
 
     const d = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     fs.appendFileSync('track.log', `Tracked at ${d} \n`);
-    console.log(`Tracked at ${d}`);
 
     const projects = await Project.find();
 
@@ -84,7 +61,6 @@ async function track() {
             since: '2023-01-31T18:30:00.000Z',
             per_page: '100'
         });
-
 
         for (let issue of resp) {
             if (issue.pull_request == undefined) {
@@ -129,12 +105,10 @@ async function track() {
                                     }
                                 }
 
-
                                 if (difficulty !== "NA") {
 
                                     user.score += diffScore;
 
-                                    // console.log(issue);
                                     user.scoresRecord.push({
                                         Issue_ID: issue.id,
                                         projectId: project.projectId,
@@ -158,48 +132,47 @@ async function track() {
                                     await user.save();
                                 }
                                 else {
-
-                                    // fs.appendFileSync('IrregularTag.log', '--------------------------------------\n');
-                                    // fs.appendFileSync('IrregularTag.log', `Difficulty tag not found in ${issue.html_url} \n`);
-                                    // console.log(`Difficulty tag not found in ${issue.html_url}`);
+                                    fs.appendFileSync('IrregularTag.log', '--------------------------------------\n');
+                                    fs.appendFileSync('IrregularTag.log', `Difficulty tag not found in ${issue.html_url} \n`);
                                 }
                             }
                         }
                     }
-
                 }
-
-
             }
         }
     };
-
 }
 
+
 // startTrack() logs and calls track() after every 60 seconds
-async function startTrack() {
+const startTrack = async() => {
     fs.appendFileSync('track.log', '--------------------------------------\n');
     await track();
     await timeout(60);
     await startTrack();
 }
 
-async function timeout(ms) {
+const timeout = async(ms) => {
     return new Promise(resolve => setTimeout(resolve, 1000 * ms));
 }
 
 // For adding multiple projects
-async function addProjects(data) {
+const addProjects = async(data) => {
     for (let d of data) {
         await fetchAndAddProject(d);
     }
 }
 
 
-startTrack();
 
-// const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
+// To start tracking projects
+// startTrack();
 
-// addProjects(data);
+// To add projects from projectsData.csv
 
-// module.exports = {test, track, startTrack};
+// Format of projectData.csv
+// projectRepoLink1,projectRepoLink2,projectRepoLink3,projectRepoLink4
+
+const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
+addProjects(data);
