@@ -42,6 +42,8 @@ const fetchAndAddProject = async(link) => {
         repo_pushed_at: new Date(resp.data.pushed_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
         date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     });
+    const project = await Project.find()
+    console.log(project.length)
 }
 
 
@@ -160,6 +162,7 @@ const timeout = async(ms) => {
 // For adding multiple projects
 const addProjects = async(data) => {
     for (let d of data) {
+        console.log(d);
         await fetchAndAddProject(d);
     }
 }
