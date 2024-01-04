@@ -12,10 +12,10 @@ mongoose.connect(process.env.DB_STRING, () => { console.log("Connected to MongoD
 
 //For adding projects to DB
 const fetchAndAddProject = async(link) => {
-
+    const newLink = link.replace(/[\r\n]+/gm, "");
     const resp = await octokit.request('GET /repos/{owner}/{repo}', {
-        owner: link.split('/')[3],
-        repo: link.split('/')[4]
+        owner: newLink.split('/')[3],
+        repo: newLink.split('/')[4]
     })
     const tc = [];
     for (let topic of resp.data.topics) {
