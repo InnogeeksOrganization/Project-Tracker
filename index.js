@@ -60,14 +60,14 @@ const track = async() => {
             owner: project.owner.ownerUsername,
             repo: project.projectName,
             state: 'closed',
-            since: '2023-01-31T18:30:00.000Z',
+            since: '2024-01-09T18:30:00.000Z',
             per_page: '100'
         });
 
         for (let issue of resp) {
             if (issue.pull_request == undefined) {
 
-                const isIWOC = issue.labels.find((element) => { return element.name.toLowerCase() === "iwoc" });
+                const isIWOC = issue.labels.find((element) => { return element.name.toLowerCase() === "iwoc2024" });
 
                 if (isIWOC) {
 
@@ -170,12 +170,12 @@ const addProjects = async(data) => {
 
 
 // To start tracking projects
-// startTrack();
+startTrack();
 
 // To add projects from projectsData.csv
 
 // Format of projectData.csv
 // projectRepoLink1,projectRepoLink2,projectRepoLink3,projectRepoLink4
 
-const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
-addProjects(data);
+// const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
+// addProjects(data);
