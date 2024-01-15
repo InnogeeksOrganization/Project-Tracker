@@ -64,6 +64,8 @@ const track = async() => {
             per_page: '100'
         });
 
+        
+
         for (let issue of resp) {
             if (issue.pull_request == undefined) {
 
