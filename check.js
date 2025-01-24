@@ -52,7 +52,7 @@ const track = async() => {
 
             const closedBy = await issueClosedByChecker(owner, repo, issue.number);
 		console.log(closedBy, issue.number);
-            const isIWOC = issue.labels.find((element) => { return element.name.toLowerCase() === "iwoc2024" });            
+            const isIWOC = issue.labels.find((element) => { return element.name.trim().toLowerCase() === "iwoc2025" });            
 
             if(isIWOC && issue.pull_request === undefined && closedBy !== owner) {
                 Total++;

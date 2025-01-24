@@ -25,11 +25,11 @@ const fetchAndAddProject = async(link) => {
         projectId: resp.data.id,
         projectName: resp.data.name,
         projectUrl: resp.data.html_url,
-        description: resp.data.description,
+        description: resp.data.description || "NA",
         language: [resp.data.language],
         topic: tc,
         open_issues: resp.data.open_issues,
-        stars: resp.data.stargrazers_count,
+        stars: resp.data.stargazers_url.length,
         difficulty: "NA",
         owner: {
             ownerId: resp.data.owner.id,
@@ -169,15 +169,13 @@ const addProjects = async(data) => {
     }
 }
 
-
-
 // To start tracking projects
-startTrack();
+// startTrack();
 
 // To add projects from projectsData.csv
 
 // Format of projectData.csv
 // projectRepoLink1,projectRepoLink2,projectRepoLink3,projectRepoLink4
 
-// const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
-// addProjects(data);
+const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
+addProjects(data);
