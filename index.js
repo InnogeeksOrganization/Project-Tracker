@@ -69,8 +69,8 @@ const track = async() => {
         for (let issue of resp) {
             if (issue.pull_request == undefined) {
 
-                const isIWOC = issue.labels.find((element) => { return element.name.toLowerCase() === "iwoc2024" });
-
+                const isIWOC = issue.labels.find((element) => { return element.name.toLowerCase() === "iwoc2025" });
+                
                 if (isIWOC) {
 
                     const assignees = issue.assignees;
@@ -170,12 +170,12 @@ const addProjects = async(data) => {
 }
 
 // To start tracking projects
-// startTrack();
+startTrack();
 
 // To add projects from projectsData.csv
 
 // Format of projectData.csv
 // projectRepoLink1,projectRepoLink2,projectRepoLink3,projectRepoLink4
 
-const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
-addProjects(data);
+// const data = fs.readFileSync('projectsData.csv', 'utf8').split(',');
+// addProjects(data);
