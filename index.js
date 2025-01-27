@@ -101,7 +101,7 @@ const track = async() => {
                                             difficulty = "medium";
                                             break;
                                         case "hard":
-                                            diffScore = 50;
+                                            diffScore = 60;
                                             difficulty = "hard";
                                             break;
                                         default:
